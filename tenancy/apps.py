@@ -22,3 +22,13 @@ class TenancyConfig(AppConfig):
 
         # Register Company / Membership on the custom admin site.
         from . import admin  # noqa: F401
+
+        # Optional: make the admin "User Activity" page aggregate across every
+        # tenant schema instead of degrading to empty under `public`. On by
+        # default; set TENANCY_CROSS_TENANT_ACTIVITY = False to disable.
+        from django.conf import settings
+
+        if getattr(settings, "TENANCY_CROSS_TENANT_ACTIVITY", True):
+            from .admin_activity_patch import apply_patch
+
+            apply_patch()
